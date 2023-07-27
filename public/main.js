@@ -108,9 +108,9 @@ function deletePost(postId) {
             autocapitalize: 'off'
         },
         showCancelButton: true,
-        cancelButtonColor: "#212121",
+        cancelButtonColor: "#24232c",
         confirmButtonText: 'Delete',
-        confirmButtonColor: "#212121",
+        confirmButtonColor: "#24232c",
         showLoaderOnConfirm: true,
         preConfirm: (password) => {
             if (password === '48597555') {
@@ -159,9 +159,9 @@ function editPost(postId) {
             autocapitalize: 'off'
         },
         showCancelButton: true,
-        cancelButtonColor: "#212121",
+        cancelButtonColor: "#24232c",
         confirmButtonText: 'Edit',
-        confirmButtonColor: "#212121",
+        confirmButtonColor: "#24232c",
         showLoaderOnConfirm: true,
         preConfirm: (password) => {
             if (password === '48597555') {
@@ -176,9 +176,9 @@ function editPost(postId) {
                 <textarea id="editText" class="swal2-input text" placeholder="Post Text" required></textarea>
                 `,
                             showCancelButton: true,
-                            cancelButtonColor: "#212121",
+                            cancelButtonColor: "#24232c",
                             confirmButtonText: 'Edit',
-                            confirmButtonColor: "#212121",
+                            confirmButtonColor: "#24232c",
                             preConfirm: () => {
                                 // Get the updated title and text
                                 const editedTitle = document.getElementById('editTitle').value;

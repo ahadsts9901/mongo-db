@@ -1,5 +1,10 @@
 import express from 'express';
 import { nanoid } from 'nanoid'
+import { client } from '../../mongodb.mjs'
+
+const db = client.db("cruddb")
+const col = db.collection("posts")
+
 let router = express.Router()
 
 // not recommended at all - server should be stateless
@@ -10,7 +15,7 @@ let posts = [{
 }]
 
 // POST    /api/v1/post
-router.post('/post', (req, res, next) => {
+router.post('/post', async(req, res, next) => {
 
     if (!req.body.title ||
         !req.body.text
@@ -25,16 +30,25 @@ router.post('/post', (req, res, next) => {
         return;
     }
 
-    posts.unshift({
+    const insertResponse = await col.insertOne({
         id: nanoid(),
         title: req.body.title,
-        text: req.body.text,
+        text: req.body.text
     })
+    console.log(insertResponse)
 
     res.send('post created');
 })
 
-// GET  ALL   POSTS   /api/v1/posts/
+//GET  ALL   POSTS   /api/v1/post/:postId
+router.get('/posts', async(req, res, next) => {
+    const cursor = col.find({})
+    let results = await cursor.toArray()
+    console.log(results)
+    res.send(results)
+})
+
+// GET  ONE   POST   /api/v1/posts/
 router.get('/post/:postId', (req, res, next) => {
     console.log('this is signup!', new Date());
 
@@ -45,11 +59,6 @@ router.get('/post/:postId', (req, res, next) => {
         }
     }
     res.send('post not found with id ' + req.params.postId);
-})
-
-//GET  ONE   POST   /api/v1/post/:postId
-router.get('/posts', (req, res, next) => {
-    res.send(posts);
 })
 
 // DELETE  /api/v1/post/:postId
