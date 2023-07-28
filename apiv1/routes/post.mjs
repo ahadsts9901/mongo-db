@@ -35,11 +35,16 @@ router.post('/post', async(req, res, next) => {
 
 //GET  ALL   POSTS   /api/v1/post/:postId
 router.get('/posts', async(req, res, next) => {
-    const cursor = col.find({})
-    let results = await cursor.toArray()
-    console.log(results)
-    res.send(results)
-})
+    try {
+        const cursor = col.find({}).sort({ timestamp: -1 });
+        let results = (await cursor.toArray()).reverse();
+
+        console.log(results);
+        res.send(results);
+    } catch (error) {
+        console.error(error);
+    }
+});
 
 // GET  ONE   POST   /api/v1/posts/
 router.get('/post/:postId', async(req, res, next) => {
