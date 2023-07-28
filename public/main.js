@@ -43,58 +43,65 @@ function renderPost() {
             let postContainer = document.querySelector(".result");
             postContainer.innerHTML = "";
 
-            posts.forEach(function(post) {
-                let postElement = document.createElement("div");
-                postElement.className += " post"
+            if (posts.length === 0) {
+                let noPostsMessage = document.createElement("h2");
+                noPostsMessage.textContent = "No post found...";
+                noPostsMessage.className = "noPostsMessage";
+                postContainer.appendChild(noPostsMessage);
+            } else {
+                posts.forEach(function(post) {
+                    let postElement = document.createElement("div");
+                    postElement.className += " post"
 
-                let time = document.createElement("p")
-                time.className += " regards center"
-                time.style.fontSize = " 0.7em"
-                time.textContent = moment(post.timestamp).fromNow()
-                postElement.appendChild(time)
+                    let time = document.createElement("p")
+                    time.className += " regards center"
+                    time.style.fontSize = " 0.7em"
+                    time.textContent = moment(post.timestamp).fromNow()
+                    postElement.appendChild(time)
 
-                let titleElement = document.createElement("h2");
-                titleElement.textContent = post.title;
-                titleElement.className += " scrollH";
-                postElement.appendChild(titleElement);
+                    let titleElement = document.createElement("h2");
+                    titleElement.textContent = post.title;
+                    titleElement.className += " scrollH";
+                    postElement.appendChild(titleElement);
 
-                let textElement = document.createElement("p");
-                textElement.className += " scroll";
-                textElement.textContent = post.text;
-                postElement.appendChild(textElement);
-                postElement.dataset.postId = post.id;
+                    let textElement = document.createElement("p");
+                    textElement.className += " scroll";
+                    textElement.textContent = post.text;
+                    postElement.appendChild(textElement);
+                    postElement.dataset.postId = post.id;
 
-                let row = document.createElement("div")
-                row.className += " space-around"
+                    let row = document.createElement("div")
+                    row.className += " space-around"
 
-                let regards = document.createElement("p")
-                regards.className += " regards"
-                regards.textContent = "Regards! Muhammad Ahad"
-                row.appendChild(regards)
+                    let regards = document.createElement("p")
+                    regards.className += " regards"
+                    regards.textContent = "Regards! Muhammad Ahad"
+                    row.appendChild(regards)
 
-                // Inside the loop that creates the post elements
-                let edit = document.createElement("i");
-                edit.className += " regards bi bi-pencil-fill";
-                edit.addEventListener("click", function(event) {
-                    event.preventDefault();
-                    let postId = this.parentNode.parentNode.dataset.postId;
-                    editPost(postId);
-                });
-                row.appendChild(edit);
+                    let edit = document.createElement("i");
+                    edit.className += " regards bi bi-pencil-fill";
+                    edit.addEventListener("click", function(event) {
+                        event.preventDefault();
+                        let postId = this.parentNode.parentNode.dataset.postId;
+                        editPost(postId);
+                    });
+                    row.appendChild(edit);
 
 
-                let del = document.createElement("i")
-                del.className += " regards bi bi-trash-fill"
-                del.addEventListener("click", function(event) {
-                    event.preventDefault();
-                    let postId = this.parentNode.parentNode.dataset.postId;
-                    deletePost(postId);
-                });
-                row.appendChild(del)
-                postElement.appendChild(row)
+                    let del = document.createElement("i")
+                    del.className += " regards bi bi-trash-fill"
+                    del.addEventListener("click", function(event) {
+                        event.preventDefault();
+                        let postId = this.parentNode.parentNode.dataset.postId;
+                        deletePost(postId);
+                    });
+                    row.appendChild(del)
+                    postElement.appendChild(row)
 
-                postContainer.appendChild(postElement);
-            });
+                    postContainer.appendChild(postElement);
+
+                })
+            };
         })
         .catch(function(error) {
             console.log(error.data);
