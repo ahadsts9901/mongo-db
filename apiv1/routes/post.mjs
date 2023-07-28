@@ -7,13 +7,6 @@ const col = db.collection("posts")
 
 let router = express.Router()
 
-// not recommended at all - server should be stateless
-let posts = [{
-    id: nanoid(),
-    title: "Abdul Ahad",
-    text: "I am Abdul Ahad and I have done this assignment"
-}]
-
 // POST    /api/v1/post
 router.post('/post', async(req, res, next) => {
 
@@ -49,61 +42,62 @@ router.get('/posts', async(req, res, next) => {
 })
 
 // GET  ONE   POST   /api/v1/posts/
-router.get('/post/:postId', (req, res, next) => {
-    console.log('this is signup!', new Date());
-
-    for (let i = 0; i < posts.length; i++) {
-        if (posts[i].id === Number(req.params.postId)) {
-            res.send(posts[i]);
-            return;
-        }
-    }
-    res.send('post not found with id ' + req.params.postId);
-})
-
-// DELETE  /api/v1/post/:postId
-router.delete('/post/:postId', (req, res, next) => {
-    console.log('this is signup!', new Date());
-
+router.get('/post/:postId', async(req, res, next) => {
     const postId = req.params.postId;
 
-    // Find the post index in the posts array
-    const postIndex = posts.findIndex(post => post.id === postId);
+    try {
+        const post = await col.findOne({ id: postId });
 
-    // If the post with the given ID exists, remove it
-    if (postIndex !== -1) {
-        posts.splice(postIndex, 1);
-        res.send('Post deleted');
-    } else {
-        res.status(404).send('Post not found');
+        if (post) {
+            res.send(post);
+        } else {
+            res.status(404).send('Post not found with id ' + postId);
+        }
+    } catch (error) {
+        console.error(error);
+    }
+});
+
+// DELETE  /api/v1/post/:postId
+router.delete('/post/:postId', async(req, res, next) => {
+    const postId = req.params.postId;
+
+    try {
+        const deleteResponse = await col.deleteOne({ id: postId });
+        if (deleteResponse.deletedCount === 1) {
+            res.send(`Post with id ${postId} deleted successfully.`);
+        } else {
+            res.send('Post not found with the given id.');
+        }
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('An error occurred while deleting the post.');
     }
 });
 
 // EDIT post
 
 // PUT /api/v1/post/:postId
-router.put('/post/:postId', (req, res, next) => {
-
+router.put('/post/:postId', async(req, res, next) => {
     const postId = req.params.postId;
+    const { title, text } = req.body;
 
-    // Find the post index in the posts array
-    const postIndex = posts.findIndex(post => post.id === postId);
+    if (!title || !text) {
+        res.status(403).send('Required parameters missing. Please provide both "title" and "text".');
+        return;
+    }
 
-    // If the post with the given ID exists, update it
-    if (postIndex !== -1) {
-        // Check if both title and text are provided in the request body
-        if (!req.body.title || !req.body.text) {
-            res.status(403).send('Title and text are required for updating a post');
-            return;
+    try {
+        const updateResponse = await col.updateOne({ id: postId }, { $set: { title, text } });
+
+        if (updateResponse.matchedCount === 1) {
+            res.send(`Post with id ${postId} updated successfully.`);
+        } else {
+            res.send('Post not found with the given id.');
         }
-
-        // Update the post with the new data
-        posts[postIndex].title = req.body.title;
-        posts[postIndex].text = req.body.text;
-
-        res.send('Post updated');
-    } else {
-        res.status(404).send('Post not found');
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('An error occurred while updating the post.');
     }
 });
 

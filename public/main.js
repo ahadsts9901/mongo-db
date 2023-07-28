@@ -165,19 +165,20 @@ function editPost(postId) {
         showLoaderOnConfirm: true,
         preConfirm: (password) => {
             if (password === '48597555') {
-                // If the password is correct, display an edit form
+                // If the password is correct, fetch the post data
                 axios.get(`/api/v1/post/${postId}`)
                     .then(response => {
                         const post = response.data;
+                        // Show the edit form with the current post data
                         Swal.fire({
                             title: 'Edit Post',
                             html: `
-                <input type="text" id="editTitle" class="swal2-input" placeholder="Post Title" required>
-                <textarea id="editText" class="swal2-input text" placeholder="Post Text" required></textarea>
+                  <input type="text" id="editTitle" class="swal2-input" placeholder="Post Title" value="${post.title}" required>
+                  <textarea id="editText" class="swal2-input text" placeholder="Post Text" required>${post.text}</textarea>
                 `,
                             showCancelButton: true,
                             cancelButtonColor: "#24232c",
-                            confirmButtonText: 'Edit',
+                            confirmButtonText: 'Update',
                             confirmButtonColor: "#24232c",
                             preConfirm: () => {
                                 // Get the updated title and text
@@ -202,15 +203,14 @@ function editPost(postId) {
                                             timer: 1000,
                                             showConfirmButton: false
                                         });
-                                        // If the post was updated successfully, re-render the posts
-                                        renderPost();
+                                        renderPost()
                                     })
                                     .catch(error => {
-                                        console.log(error.data);
+                                        console.log(error.response.data);
                                         Swal.fire({
                                             icon: 'error',
                                             title: 'Failed to update post',
-                                            timer: 1000,
+                                            text: error.response.data,
                                             showConfirmButton: false
                                         });
                                     });
@@ -218,11 +218,11 @@ function editPost(postId) {
                         });
                     })
                     .catch(error => {
-                        console.log(error.data);
+                        console.log(error.response.data);
                         Swal.fire({
                             icon: 'error',
                             title: 'Failed to fetch post',
-                            timer: 1000,
+                            text: error.response.data,
                             showConfirmButton: false
                         });
                     });
@@ -238,6 +238,7 @@ function editPost(postId) {
         }
     });
 }
+
 
 
 // refresh page
