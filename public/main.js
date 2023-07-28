@@ -1,3 +1,5 @@
+// create post
+
 function createPost(event) {
     event.preventDefault()
     let postTitle = document.querySelector("#title");
@@ -31,6 +33,8 @@ function createPost(event) {
     postText.value = ""
 }
 
+// render posts
+
 function renderPost() {
     // baseUrl/api/v1/post
     axios.get(`/api/v1/posts`)
@@ -39,7 +43,6 @@ function renderPost() {
             let postContainer = document.querySelector(".result");
             postContainer.innerHTML = "";
 
-            // Loop through the posts and create elements for each post
             posts.forEach(function(post) {
                 let postElement = document.createElement("div");
                 postElement.className += " post"
@@ -113,8 +116,8 @@ function deletePost(postId) {
         confirmButtonColor: "#24232c",
         showLoaderOnConfirm: true,
         preConfirm: (password) => {
-            if (password === '48597555') {
-                // If the password is correct, send the DELETE request
+            if (password === '12345') {
+
                 return axios.delete(`/api/v1/post/${postId}`)
                     .then(response => {
                         console.log(response.data);
@@ -124,7 +127,7 @@ function deletePost(postId) {
                             timer: 1000,
                             showConfirmButton: false
                         });
-                        // If the post was deleted successfully, re-render the posts
+
                         renderPost();
                     })
                     .catch(error => {
@@ -136,7 +139,7 @@ function deletePost(postId) {
                         });
                     });
             } else {
-                // If the password is incorrect, display an error message
+
                 return Swal.fire({
                     icon: 'error',
                     title: 'Invalid Password',
@@ -164,12 +167,12 @@ function editPost(postId) {
         confirmButtonColor: "#24232c",
         showLoaderOnConfirm: true,
         preConfirm: (password) => {
-            if (password === '48597555') {
-                // If the password is correct, fetch the post data
+            if (password === '12345') {
+
                 axios.get(`/api/v1/post/${postId}`)
                     .then(response => {
                         const post = response.data;
-                        // Show the edit form with the current post data
+
                         Swal.fire({
                             title: 'Edit Post',
                             html: `
@@ -181,7 +184,7 @@ function editPost(postId) {
                             confirmButtonText: 'Update',
                             confirmButtonColor: "#24232c",
                             preConfirm: () => {
-                                // Get the updated title and text
+
                                 const editedTitle = document.getElementById('editTitle').value;
                                 const editedText = document.getElementById('editText').value;
 
@@ -190,7 +193,6 @@ function editPost(postId) {
                                     return false;
                                 }
 
-                                // Make the API call to update the post
                                 return axios.put(`/api/v1/post/${postId}`, {
                                         title: editedTitle,
                                         text: editedText
@@ -227,7 +229,7 @@ function editPost(postId) {
                         });
                     });
             } else {
-                // If the password is incorrect, display an error message
+
                 Swal.fire({
                     icon: 'error',
                     title: 'Invalid Password',
@@ -239,7 +241,60 @@ function editPost(postId) {
     });
 }
 
+// delete all
 
+function deleteAllPosts() {
+    Swal.fire({
+        title: 'Enter Password',
+        input: 'password',
+        inputAttributes: {
+            autocapitalize: 'off'
+        },
+        showCancelButton: true,
+        cancelButtonColor: "#24232c",
+        confirmButtonText: 'Delete All Posts',
+        confirmButtonColor: "#24232c",
+        showLoaderOnConfirm: true,
+        preConfirm: (password) => {
+            if (password === '12345') {
+                return axios.delete(`/api/v1/posts/all`, {
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        data: {
+                            password: password
+                        }
+                    })
+                    .then(response => {
+                        console.log(response.data);
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'All Posts Deleted',
+                            timer: 1000,
+                            showConfirmButton: false
+                        });
+                        renderPost();
+                    })
+                    .catch(error => {
+                        console.log(error.data);
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Failed to delete all posts',
+                            showConfirmButton: false
+                        });
+                    });
+            } else {
+                return Swal.fire({
+                    icon: 'error',
+                    title: 'Invalid Password',
+                    text: 'Please enter correct password',
+                    timer: 1000,
+                    showConfirmButton: false
+                });
+            }
+        }
+    });
+}
 
 // refresh page
 

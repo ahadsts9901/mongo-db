@@ -63,6 +63,24 @@ router.get('/post/:postId', async(req, res, next) => {
     }
 });
 
+// DELETE ALL   /api/v1/posts
+
+router.delete('/posts/all', async(req, res, next) => {
+    try {
+
+        const deleteResponse = await col.deleteMany({});
+
+        if (deleteResponse.deletedCount > 0) {
+            res.send(`${deleteResponse.deletedCount} posts deleted successfully.`);
+        } else {
+            res.send('No posts found to delete.');
+        }
+    } catch (error) {
+        console.error(error);
+    }
+});
+
+
 // DELETE  /api/v1/post/:postId
 router.delete('/post/:postId', async(req, res, next) => {
     const postId = req.params.postId;
@@ -76,7 +94,6 @@ router.delete('/post/:postId', async(req, res, next) => {
         }
     } catch (error) {
         console.error(error);
-        res.status(500).send('An error occurred while deleting the post.');
     }
 });
 
@@ -102,7 +119,6 @@ router.put('/post/:postId', async(req, res, next) => {
         }
     } catch (error) {
         console.error(error);
-        res.status(500).send('An error occurred while updating the post.');
     }
 });
 
