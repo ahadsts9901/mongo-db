@@ -25,7 +25,8 @@ router.post('/post', async(req, res, next) => {
 
     const insertResponse = await col.insertOne({
         title: req.body.title,
-        text: req.body.text
+        text: req.body.text,
+        time: new Date()
     })
     console.log(insertResponse)
 

@@ -11,10 +11,9 @@ function createPost(event) {
     axios.post(`/api/v1/post`, {
             title: postTitle.value,
             text: postText.value,
-            timestamp: timestamp
         })
         .then(function(response) {
-            console.log(response.data);
+            // console.log(response.data);
             Swal.fire({
                 icon: 'success',
                 title: 'Post Added',
@@ -25,7 +24,7 @@ function createPost(event) {
         })
         .catch(function(error) {
             // handle error
-            console.log(error.data);
+            // console.log(error.data);
             document.querySelector(".result").innerHTML = "error in post submission"
         })
 
@@ -56,7 +55,7 @@ function renderPost() {
                     let time = document.createElement("p")
                     time.className += " regards center"
                     time.style.fontSize = " 0.7em"
-                    time.textContent = moment(post.timestamp).fromNow()
+                    time.textContent = moment(post.time).fromNow()
                     postElement.appendChild(time)
 
                     let titleElement = document.createElement("h2");
@@ -83,7 +82,7 @@ function renderPost() {
                     edit.addEventListener("click", function(event) {
                         event.preventDefault();
                         let postId = this.parentNode.parentNode.dataset.postId;
-                        console.log(postId)
+                        // console.log(postId)
                         editPost(postId);
                     });
                     row.appendChild(edit);
@@ -105,7 +104,7 @@ function renderPost() {
             };
         })
         .catch(function(error) {
-            console.log(error.data);
+            // console.log(error.data);
         });
 }
 
@@ -128,7 +127,7 @@ function deletePost(postId) {
 
                 return axios.delete(`/api/v1/post/${postId}`)
                     .then(response => {
-                        console.log(response.data);
+                        // console.log(response.data);
                         Swal.fire({
                             icon: 'success',
                             title: 'Post Deleted',
@@ -139,7 +138,7 @@ function deletePost(postId) {
                         renderPost();
                     })
                     .catch(error => {
-                        console.log(error.data);
+                        // console.log(error.data);
                         Swal.fire({
                             icon: 'error',
                             title: 'Failed to delete post',
@@ -206,7 +205,7 @@ function editPost(postId) {
                                         text: editedText
                                     })
                                     .then(response => {
-                                        console.log(response.data);
+                                        // console.log(response.data);
                                         Swal.fire({
                                             icon: 'success',
                                             title: 'Post Updated',
@@ -216,7 +215,7 @@ function editPost(postId) {
                                         renderPost()
                                     })
                                     .catch(error => {
-                                        console.log(error.response.data);
+                                        // console.log(error.response.data);
                                         Swal.fire({
                                             icon: 'error',
                                             title: 'Failed to update post',
@@ -228,7 +227,7 @@ function editPost(postId) {
                         });
                     })
                     .catch(error => {
-                        console.log(error.response.data);
+                        // console.log(error.response.data);
                         Swal.fire({
                             icon: 'error',
                             title: 'Failed to fetch post',
@@ -274,7 +273,7 @@ function deleteAllPosts() {
                         }
                     })
                     .then(response => {
-                        console.log(response.data);
+                        // console.log(response.data);
                         Swal.fire({
                             icon: 'success',
                             title: 'All Posts Deleted',
@@ -284,7 +283,7 @@ function deleteAllPosts() {
                         renderPost();
                     })
                     .catch(error => {
-                        console.log(error.data);
+                        // console.log(error.data);
                         Swal.fire({
                             icon: 'error',
                             title: 'Failed to delete all posts',

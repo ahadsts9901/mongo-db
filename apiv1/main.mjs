@@ -14,3 +14,6 @@ router.use(postRouter)
 // })
 
 export default router
+
+// get one post
+// time
