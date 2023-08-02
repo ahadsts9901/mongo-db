@@ -1,6 +1,6 @@
 import express from 'express';
-import { nanoid } from 'nanoid'
 import { client } from '../../mongodb.mjs'
+import { ObjectId } from 'mongodb';
 
 const db = client.db("cruddb")
 const col = db.collection("posts")
@@ -24,7 +24,6 @@ router.post('/post', async(req, res, next) => {
     }
 
     const insertResponse = await col.insertOne({
-        id: nanoid(),
         title: req.body.title,
         text: req.body.text
     })
@@ -36,8 +35,8 @@ router.post('/post', async(req, res, next) => {
 //GET  ALL   POSTS   /api/v1/post/:postId
 router.get('/posts', async(req, res, next) => {
     try {
-        const cursor = col.find({}).sort({ timestamp: -1 });
-        let results = (await cursor.toArray()).reverse();
+        const cursor = col.find({}).sort({ _id: -1 });
+        let results = await cursor.toArray();
 
         console.log(results);
         res.send(results);
@@ -48,10 +47,10 @@ router.get('/posts', async(req, res, next) => {
 
 // GET  ONE   POST   /api/v1/posts/
 router.get('/post/:postId', async(req, res, next) => {
-    const postId = req.params.postId;
+    const postId = new ObjectId(req.params.postId);
 
     try {
-        const post = await col.findOne({ id: postId });
+        const post = await col.findOne({ _id: postId });
 
         if (post) {
             res.send(post);
@@ -83,10 +82,10 @@ router.delete('/posts/all', async(req, res, next) => {
 
 // DELETE  /api/v1/post/:postId
 router.delete('/post/:postId', async(req, res, next) => {
-    const postId = req.params.postId;
+    const postId = new ObjectId(req.params.postId);
 
     try {
-        const deleteResponse = await col.deleteOne({ id: postId });
+        const deleteResponse = await col.deleteOne({ _id: postId });
         if (deleteResponse.deletedCount === 1) {
             res.send(`Post with id ${postId} deleted successfully.`);
         } else {
@@ -101,7 +100,7 @@ router.delete('/post/:postId', async(req, res, next) => {
 
 // PUT /api/v1/post/:postId
 router.put('/post/:postId', async(req, res, next) => {
-    const postId = req.params.postId;
+    const postId = new ObjectId(req.params.postId);
     const { title, text } = req.body;
 
     if (!title || !text) {
@@ -110,7 +109,7 @@ router.put('/post/:postId', async(req, res, next) => {
     }
 
     try {
-        const updateResponse = await col.updateOne({ id: postId }, { $set: { title, text } });
+        const updateResponse = await col.updateOne({ _id: postId }, { $set: { title, text } });
 
         if (updateResponse.matchedCount === 1) {
             res.send(`Post with id ${postId} updated successfully.`);

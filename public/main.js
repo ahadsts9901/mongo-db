@@ -68,7 +68,7 @@ function renderPost() {
                     textElement.className += " scroll";
                     textElement.textContent = post.text;
                     postElement.appendChild(textElement);
-                    postElement.dataset.postId = post.id;
+                    postElement.dataset.postId = post._id;
 
                     let row = document.createElement("div")
                     row.className += " space-around"
@@ -83,6 +83,7 @@ function renderPost() {
                     edit.addEventListener("click", function(event) {
                         event.preventDefault();
                         let postId = this.parentNode.parentNode.dataset.postId;
+                        console.log(postId)
                         editPost(postId);
                     });
                     row.appendChild(edit);
