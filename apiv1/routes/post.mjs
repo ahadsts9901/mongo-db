@@ -3,7 +3,7 @@ import { client } from '../../mongodb.mjs'
 import { ObjectId } from 'mongodb';
 
 const db = client.db("cruddb")
-const col = db.collection("posts")
+const col = db.collection("mongo-posts")
 
 let router = express.Router()
 
